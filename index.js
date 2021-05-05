@@ -7,11 +7,12 @@ app.use(cors);
 app.use(express.static("public"));
 app.set("views", "views");
 app.set("view engine", "pug");
+app.locals.pretty = true;
 
 app.get("/", (req, res) => {
   res.render("index");
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`Listening at http://localhost:${port}`)
 })
