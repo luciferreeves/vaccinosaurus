@@ -3,7 +3,12 @@ html(lang='en')
     include common/header.pug
     +head('Home')
     body
-        div(id="snackbar") Invalid PIN Code
+        nav(class="navbar navbar-dark bg-dark")
+            div(class="container-fluid")
+                a(class="navbar-brand" href="./") Vaccinosaurus
+                div(class="d-flex")
+                    //- button(class="btn btn-success me-2" type="button") Notify Me
+                    a(class="btn btn-primary" type="button" href="https://github.com/luciferreeves/vaccinosaurus") Fork on GitHub
         div(class="container-xxl")
             div(class="mt-5")
                 h1(class="display-4 text-center") Vaccinosaurus
@@ -36,5 +41,6 @@ html(lang='en')
                     div(class="spinner-border text-primary" role="status" id="spinner")
                         span(class="visually-hidden") Loading..
                     div(id="results" class="table-responsive")
+        div(id="snackbar") Invalid PIN Code
 
     script(src="js/districtChooser.js")
