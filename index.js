@@ -26,6 +26,7 @@ app.get("/account", (req, res) => {
   res.render("account");
 });
 
+console.log(process.env.SERVICE_ACCOUNT_KEY)
 const serviceAccount = JSON.parse(Buffer.from(process.env.SERVICE_ACCOUNT_KEY, 'base64').toString());
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
