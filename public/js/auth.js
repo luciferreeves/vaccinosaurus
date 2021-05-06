@@ -9,7 +9,7 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-if (window.location.pathname === '/notify') {
+if (window.location.pathname !== '/') {
     checkForLogin()
 }
 
