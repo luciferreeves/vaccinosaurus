@@ -85,7 +85,7 @@ function findDatesByPIN(id, user) {
 function saveResponse(currentDate, id, user, JSONCalendarResponse) {
   const added = [];
   const collectionRef = db.collection("users").doc(id);
-  if (JSONCalendarResponse.centers) {
+  if (JSONCalendarResponse && JSONCalendarResponse.centers) {
     JSONCalendarResponse.centers.forEach(center => {
       if (!added.length) {
         if (center.sessions) {
