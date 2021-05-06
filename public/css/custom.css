@@ -97,3 +97,15 @@
     opacity: 0;
   }
 }
+
+#spinner {
+  display: none;
+}
+
+.address {
+  font-size: 0.8rem;
+}
+
+.vaccine, .minAge {
+  font-size: 0.6rem;
+}
