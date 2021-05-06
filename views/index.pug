@@ -30,13 +30,13 @@ html(lang='en')
                 div(class="mt-1" id="searchByDistrictForm")
                     div(class="row")
                         div(class="col-5 mx-auto")
-                            select(class="form-select")
+                            select(class="form-select" id="states")
                                 option(selected disabled) Select a state
                         div(class="col-5 mx-auto")
-                            select(class="form-select")
+                            select(class="form-select" id="districts")
                                 option(selected disabled) Select a district
                         div(class="col-2 mx-auto")
-                            button(class="btn btn-primary" style="width: 100%") Search
+                            button(class="btn btn-primary" style="width: 100%" onclick="getAvailableSlotsByDistrict(document.getElementById('districts').value)") Search
                 div(class="mt-5 d-flex justify-content-center")
                     div(class="spinner-border text-primary" role="status" id="spinner")
                         span(class="visually-hidden") Loading..
