@@ -38,3 +38,5 @@ service cloud.firestore {
 The above security rule will allow read and write access to only authenticated users.
 
 **_PLEASE STAR THE REPOSITORY IF YOU LIKE VACCINOSAURUS_**
+
+`LICENSED UNDER THE MIT LICENSE`
