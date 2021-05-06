@@ -1,0 +1,22 @@
+doctype html
+html(lang='en')
+    include common/header.pug
+    +head('Login to Notify')
+    body
+        nav(class="navbar navbar-dark bg-dark")
+            div(class="container-fluid")
+                a(class="navbar-brand" href="./") Vaccinosaurus
+                div(class="d-flex")
+                    a(class="btn btn-success me-2" type="button" href="/notify") Notify Me
+                    a(class="btn btn-primary" type="button" href="https://github.com/luciferreeves/vaccinosaurus") Fork on GitHub
+        div(class="container-xxl")
+            div(class="mt-5 text-center")
+                h1(class="display-4") Login to get notified!
+                p
+                    small Vaccinosaurus saves your information like your vaccine choice, age, PIN code, district and notifies you via email whenever a slot is available for you in your nearest vaccination center. Also, don't worry about the data as this is not Facebook! If you are still thinking that your data is at risk, literally the whole code is made available on GitHub for your keen inspection. Vaccinosaurus currently only supports login via Google - more login methods could be added in the not too distant future.
+                button(type="button" class="btn btn-primary" onclick="signInWithGoogle()") Login via Google
+
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js")
+    script(src="js/auth.js")

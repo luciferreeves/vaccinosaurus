@@ -1,0 +1,21 @@
+doctype html
+html(lang='en')
+    include common/header.pug
+    +head('My Account')
+    body
+        nav(class="navbar navbar-dark bg-dark")
+            div(class="container-fluid")
+                a(class="navbar-brand" href="./") Vaccinosaurus
+                div(class="d-flex")
+                    button(class="btn btn-success me-2" type="button" onclick="logout()") Logout
+                    a(class="btn btn-primary" type="button" href="https://github.com/luciferreeves/vaccinosaurus") Fork on GitHub
+        div(class="container-xxl")
+            div(class="mt-5 text-center")
+                h1(class="display-4") My Account
+                p Page in Progress
+                
+
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js")
+    script(src="js/auth.js")

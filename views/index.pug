@@ -7,7 +7,7 @@ html(lang='en')
             div(class="container-fluid")
                 a(class="navbar-brand" href="./") Vaccinosaurus
                 div(class="d-flex")
-                    //- button(class="btn btn-success me-2" type="button") Notify Me
+                    button(class="btn btn-success me-2" type="button" onclick="checkForLogin()") Notify Me
                     a(class="btn btn-primary" type="button" href="https://github.com/luciferreeves/vaccinosaurus") Fork on GitHub
         div(class="container-xxl")
             div(class="mt-5")
@@ -44,3 +44,7 @@ html(lang='en')
         div(id="snackbar") Invalid PIN Code
 
     script(src="js/districtChooser.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-app.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-auth.js")
+    script(src="https://www.gstatic.com/firebasejs/8.5.0/firebase-firestore.js")
+    script(src="js/auth.js")
