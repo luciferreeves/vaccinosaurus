@@ -8,6 +8,10 @@ const fetch = require('node-fetch');
 
 require('dotenv').config()
 
+app.use(function (req, res, next) {
+  req.headers.origin = req.headers.origin || req.headers.host;
+  next();
+});
 app.use(cors());
 app.use(express.static("public"));
 app.set("views", "views");
