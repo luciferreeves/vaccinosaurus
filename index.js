@@ -1,5 +1,7 @@
 const express = require("express");
-const cors = require("cors")({ origin: true });
+const cors = require('cors')({
+    origin: true
+});
 const app = express();
 const port = process.env.PORT || 3000;
 const admin = require('firebase-admin');
@@ -8,11 +10,8 @@ const fetch = require('node-fetch');
 
 require('dotenv').config()
 
-app.use(function (req, res, next) {
-  req.headers.origin = req.headers.origin || req.headers.host;
-  next();
-});
-app.use(cors());
+app.use(cors);
+app.options('*', cors);
 app.use(express.static("public"));
 app.set("views", "views");
 app.set("view engine", "pug");
