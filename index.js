@@ -85,26 +85,28 @@ function findDatesByPIN(id, user) {
 function saveResponse(currentDate, id, user, JSONCalendarResponse) {
   const added = [];
   const collectionRef = db.collection("users").doc(id);
-  JSONCalendarResponse.centers.forEach(center => {
-    if (!added.length) {
-      if (center.sessions) {
-        center.sessions.forEach(session => {
-          if (session.available_capacity > 0) {
-            if (user.notifyForAges == 'all' || user.notifyForAges === session.min_age_limit) {
-              added[0] = {
-                lastNotified: currentDate,
-                nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode}`
+  if (JSONCalendarResponse.centers) {
+    JSONCalendarResponse.centers.forEach(center => {
+      if (!added.length) {
+        if (center.sessions) {
+          center.sessions.forEach(session => {
+            if (session.available_capacity > 0) {
+              if (user.notifyForAges == 'all' || user.notifyForAges === session.min_age_limit) {
+                added[0] = {
+                  lastNotified: currentDate,
+                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode}`
+                }
+                collectionRef.update({
+                  lastNotified: currentDate,
+                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode}`
+                })
               }
-              collectionRef.update({
-                lastNotified: currentDate,
-                nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode}`
-              })
             }
-          }
-        });
+          });
+        }
       }
-    }
-  });
+    });
+  }
 
   if (!added.length) {
     // No vaccines found
