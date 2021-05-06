@@ -39,4 +39,4 @@ The above security rule will allow read and write access to only authenticated u
 
 **_PLEASE STAR THE REPOSITORY IF YOU LIKE VACCINOSAURUS_**
 
-`LICENSED UNDER THE MIT LICENSE`
+LICENSED UNDER THE MIT LICENSE
