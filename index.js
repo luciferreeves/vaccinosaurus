@@ -8,7 +8,7 @@ const fetch = require('node-fetch');
 
 require('dotenv').config()
 
-app.use(cors);
+app.use(cors());
 app.use(express.static("public"));
 app.set("views", "views");
 app.set("view engine", "pug");
