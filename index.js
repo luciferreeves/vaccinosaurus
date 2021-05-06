@@ -38,10 +38,9 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-// cron.schedule('* * * * *', () => {
-  console.log('New Cron Job running')
+cron.schedule('* * * * *', () => {
   checkAvailability();
-// });
+});
 
 function checkAvailability() {
   db.collection('users').get().then(snapshot => {
@@ -64,55 +63,29 @@ function checkAvailability() {
 
 function findDatesByDistrict(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
-  let config = {
-    method: 'get',
-    url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`,
-    headers: {
-      'accept': 'application/json',
-      'Accept-Language': 'hi_IN'
+  fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`).then((response) => {
+    if (response.status === 200) {
+      return response.json();
     }
-  };
-  axios(config).then(function (response) {
-    saveResponse(currentDate, id, user, response.data)
-  }).catch(function (error) {
+  }).then((JSONCalendarResponse) => {
+    saveResponse(currentDate, id, user, JSONCalendarResponse)
+  }).catch((error) => {
     console.log(error);
-  });
-  // fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`).then((response) => {
-  //   if (response.status === 200) {
-  //     return response.json();
-  //   }
-  // }).then((JSONCalendarResponse) => {
-  //   saveResponse(currentDate, id, user, JSONCalendarResponse)
-  // }).catch((error) => {
-  //   console.log(error);
-  // })
+  })
 }
 
 function findDatesByPIN(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
-  let config = {
-    method: 'get',
-    url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`,
-    headers: {
-      'accept': 'application/json',
-      'Accept-Language': 'hi_IN'
+  fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`).then((response) => {
+    console.log(response.status);
+    if (response.status === 200) {
+      return response.json();
     }
-  };
-  axios(config).then(function (response) {
-    saveResponse(currentDate, id, user, response.data)
-  }).catch(function (error) {
+  }).then((JSONCalendarResponse) => {
+    saveResponse(currentDate, id, user, JSONCalendarResponse)
+  }).catch((error) => {
     console.log(error);
-  });
-  // fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`).then((response) => {
-  //   console.log(response.status);
-  //   if (response.status === 200) {
-  //     return response.json();
-  //   }
-  // }).then((JSONCalendarResponse) => {
-  //   saveResponse(currentDate, id, user, JSONCalendarResponse)
-  // }).catch((error) => {
-  //   console.log(error);
-  // })
+  })
 }
 
 function saveResponse(currentDate, id, user, JSONCalendarResponse) {
@@ -127,11 +100,11 @@ function saveResponse(currentDate, id, user, JSONCalendarResponse) {
               if (user.notifyForAges == 'all' || user.notifyForAges === session.min_age_limit) {
                 added[0] = {
                   lastNotified: currentDate,
-                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode}`
+                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}`
                 }
                 collectionRef.update({
                   lastNotified: currentDate,
-                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode}`
+                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}`
                 })
               }
             }
