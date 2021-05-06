@@ -60,7 +60,9 @@ function findDatesByDistrict(id, user) {
     return response.json();
   }).then((JSONCalendarResponse) => {
     saveResponse(currentDate, id, user, JSONCalendarResponse)
-  });
+  }).catch((error) => {
+    console.log(error);
+  })
 }
 
 function findDatesByPIN(id, user) {
@@ -69,7 +71,9 @@ function findDatesByPIN(id, user) {
     return response.json();
   }).then((JSONCalendarResponse) => {
     saveResponse(currentDate, id, user, JSONCalendarResponse)
-  });
+  }).catch((error) => {
+    console.log(error);
+  })
 }
 
 function saveResponse(currentDate, id, user, JSONCalendarResponse) {
