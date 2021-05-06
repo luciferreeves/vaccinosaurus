@@ -48,7 +48,7 @@ firebase.auth().onAuthStateChanged((user) => {
                     }
                 }
 
-                if(doc.data().nextAvailableVaccine) {
+                if (doc.data().nextAvailableVaccine) {
                     vaccineInformation.innerHTML = doc.data().nextAvailableVaccine
                 } else {
                     vaccineInformation.innerHTML = 'No vaccines available currently.'
@@ -66,7 +66,9 @@ firebase.auth().onAuthStateChanged((user) => {
             } else {
                 age.classList.remove('is-invalid');
                 collectionRef.update({
-                    age: value
+                    age: value,
+                    lastNotified: null,
+                    nextAvailableVaccine: null
                 })
             }
         })
@@ -78,7 +80,9 @@ firebase.auth().onAuthStateChanged((user) => {
             } else {
                 pincode.classList.remove('is-invalid');
                 collectionRef.update({
-                    pincode: value
+                    pincode: value,
+                    lastNotified: null,
+                    nextAvailableVaccine: null
                 })
             }
         })
@@ -94,9 +98,20 @@ firebase.auth().onAuthStateChanged((user) => {
         districts.addEventListener('change', (event) => {
             const value = event.target.value;
             collectionRef.update({
-                districtID: value
+                districtID: value,
+                lastNotified: null,
+                nextAvailableVaccine: null
             })
         });
+
+        notifyWith.addEventListener('change', (event) => {
+            const value = event.target.value;
+            collectionRef.update({
+                notifyWith: value,
+                lastNotified: null,
+                nextAvailableVaccine: null
+            })
+        })
 
     }
 });
