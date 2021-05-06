@@ -1,12 +1,15 @@
 const express = require("express");
 const cors = require('cors')({
-    origin: true
+  origin: true
 });
 const app = express();
 const port = process.env.PORT || 3000;
 const admin = require('firebase-admin');
 const cron = require('node-cron');
 const fetch = require('node-fetch');
+
+// Trying axios
+const axios = require('axios');
 
 require('dotenv').config()
 
@@ -35,15 +38,16 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-cron.schedule('* * * * *', () => {
+// cron.schedule('* * * * *', () => {
   console.log('New Cron Job running')
   checkAvailability();
-});
+// });
 
 function checkAvailability() {
   db.collection('users').get().then(snapshot => {
     snapshot.forEach((doc) => {
       if (!doc.data().lastNotified || doc.data().lastNotified !== addDaysToDate(new Date().toJSON().slice(0, 10), 1)) {
+        console.log('Not notified')
         if (doc.data().pincode && doc.data().notifyWith === 'pincode') {
           findDatesByPIN(doc.id, doc.data())
         }
@@ -60,29 +64,55 @@ function checkAvailability() {
 
 function findDatesByDistrict(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
-  fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`).then((response) => {
-    if (response.status === 200) {
-      return response.json();
+  let config = {
+    method: 'get',
+    url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`,
+    headers: {
+      'accept': 'application/json',
+      'Accept-Language': 'hi_IN'
     }
-  }).then((JSONCalendarResponse) => {
-    saveResponse(currentDate, id, user, JSONCalendarResponse)
-  }).catch((error) => {
+  };
+  axios(config).then(function (response) {
+    saveResponse(currentDate, id, user, response.data)
+  }).catch(function (error) {
     console.log(error);
-  })
+  });
+  // fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`).then((response) => {
+  //   if (response.status === 200) {
+  //     return response.json();
+  //   }
+  // }).then((JSONCalendarResponse) => {
+  //   saveResponse(currentDate, id, user, JSONCalendarResponse)
+  // }).catch((error) => {
+  //   console.log(error);
+  // })
 }
 
 function findDatesByPIN(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
-  fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`).then((response) => {
-    console.log(response.status);
-    if (response.status === 200) {
-      return response.json();
+  let config = {
+    method: 'get',
+    url: `https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`,
+    headers: {
+      'accept': 'application/json',
+      'Accept-Language': 'hi_IN'
     }
-  }).then((JSONCalendarResponse) => {
-    saveResponse(currentDate, id, user, JSONCalendarResponse)
-  }).catch((error) => {
+  };
+  axios(config).then(function (response) {
+    saveResponse(currentDate, id, user, response.data)
+  }).catch(function (error) {
     console.log(error);
-  })
+  });
+  // fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`).then((response) => {
+  //   console.log(response.status);
+  //   if (response.status === 200) {
+  //     return response.json();
+  //   }
+  // }).then((JSONCalendarResponse) => {
+  //   saveResponse(currentDate, id, user, JSONCalendarResponse)
+  // }).catch((error) => {
+  //   console.log(error);
+  // })
 }
 
 function saveResponse(currentDate, id, user, JSONCalendarResponse) {
