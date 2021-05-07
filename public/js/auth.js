@@ -19,6 +19,9 @@ function checkForLogin() {
             if (window.location.pathname !== '/account') {
                 window.location = `${window.location.origin}/account`;
             }
+            if(document.getElementById('notifyMeButton')) {
+                document.getElementById('notifyMeButton').innerHTML = 'My Account';
+            }
         } else {
             if (window.location.pathname !== '/notify') {
                 window.location = `${window.location.origin}/notify`;
