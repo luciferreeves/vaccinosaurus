@@ -10,7 +10,7 @@ You can visit Vaccinosaurus by clicking [this link](https://vaccinosaurus.heroku
     + [Why Vaccinosaurus?](#why-vaccinosaurus)
     + [How do I get notified?](#how-do-i-get-notified)
     + [You save data?](#you-save-data)
-    + [Cool, what database do you use?](#cool--what-database-do-you-use)
+    + [Cool, what database do you use?](#cool-what-database-do-you-use)
   * [Local Development](#local-development)
   * [Issues and Pull Requests](#issues-and-pull-requests)
   * [License](#license)
