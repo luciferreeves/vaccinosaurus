@@ -10,7 +10,7 @@ Vaccinosaurus is a COVID-19 vaccine availability tracker and notifier. This webs
 
 ## Why Vaccinosaurus?
 
-Why is it called Vaccinosaurus? For one, dinosaurs are were cool! And two, there was an utter shortage of cool unique names. So, here we are, T-Rex!
+Why is it called Vaccinosaurus? For one, dinosaurs ~~are~~ were cool! And two, there was an utter shortage of cool unique names. So, here we are, T-Rex!
 
 ## How do I get notified?
 
