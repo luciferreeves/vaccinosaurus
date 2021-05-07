@@ -1,6 +1,6 @@
 # Vaccinosaurus
 
-![Deployed on Heroku](https://img.shields.io/badge/Website-Deployed%20On%20Heroku-6567a5) <!-- ![GitHub deployments](https://img.shields.io/github/deployments/luciferreeves/vaccinosaurus/vaccinosaurus?label=Deployment%20State) --> ![GitHub Repo stars](https://img.shields.io/github/stars/luciferreeves/vaccinosaurus?label=Stars)
+![Deployed on Heroku](https://img.shields.io/badge/Website-Deployed%20On%20Heroku-6567a5) ![GitHub deployments](https://img.shields.io/github/deployments/luciferreeves/vaccinosaurus/vaccinosaurus?label=Deployment%20State) ![GitHub Repo stars](https://img.shields.io/github/stars/luciferreeves/vaccinosaurus?label=Stars)
 
 You can visit Vaccinosaurus by clicking [this link](https://vaccinosaurus.herokuapp.com/). Vaccinosaurus only works in India.
 
