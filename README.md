@@ -4,12 +4,13 @@
 
 You can visit Vaccinosaurus by clicking [this link](https://vaccinosaurus.herokuapp.com/). Vaccinosaurus only works in India.
 
+## Table of Contents
 - [Vaccinosaurus](#vaccinosaurus)
-  * [What is Vaccinosaurus?](#what-is-vaccinosaurus-)
-    + [Why Vaccinosaurus?](#why-vaccinosaurus-)
-    + [How do I get notified?](#how-do-i-get-notified-)
-    + [You save data?](#you-save-data-)
-    + [Cool, what database do you use?](#cool--what-database-do-you-use-)
+  * [What is Vaccinosaurus?](#what-is-vaccinosaurus)
+    + [Why Vaccinosaurus?](#why-vaccinosaurus)
+    + [How do I get notified?](#how-do-i-get-notified)
+    + [You save data?](#you-save-data)
+    + [Cool, what database do you use?](#cool--what-database-do-you-use)
   * [Local Development](#local-development)
   * [Issues and Pull Requests](#issues-and-pull-requests)
   * [License](#license)
