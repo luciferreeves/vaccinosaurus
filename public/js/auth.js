@@ -9,18 +9,32 @@ const firebaseConfig = {
 
 firebase.initializeApp(firebaseConfig);
 
-if (window.location.pathname !== '/') {
-    checkForLogin()
-}
+// if (window.location.pathname !== '/') {
+checkForLogin()
+// }
 
 function checkForLogin() {
     firebase.auth().onAuthStateChanged((user) => {
         if (user) {
-            if (window.location.pathname !== '/account') {
+            if (window.location.pathname !== '/account' && window.location.pathname !== '/') {
                 window.location = `${window.location.origin}/account`;
             }
-            if(document.getElementById('notifyMeButton')) {
+            if (document.getElementById('notifyMeButton')) {
                 document.getElementById('notifyMeButton').innerHTML = 'My Account';
+            }
+        } else {
+            if (window.location.pathname !== '/notify' && window.location.pathname !== '/') {
+                window.location = `${window.location.origin}/notify`;
+            }
+        }
+    });
+}
+
+function myAccount() {
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            if (window.location.pathname !== '/account') {
+                window.location = `${window.location.origin}/account`;
             }
         } else {
             if (window.location.pathname !== '/notify') {
