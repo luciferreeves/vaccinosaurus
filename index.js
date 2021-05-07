@@ -63,7 +63,7 @@ function checkAvailability() {
 
 function findDatesByDistrict(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
-  fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByDistrict?district_id=${user.districtID}&date=${currentDate}`).then((response) => {
+  fetch(`${process.env.SERVER_ADDRESS}district?district_id=${user.districtID}&date=${currentDate}`).then((response) => {
     if (response.status === 200) {
       return response.json();
     }
@@ -76,7 +76,7 @@ function findDatesByDistrict(id, user) {
 
 function findDatesByPIN(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
-  fetch(`https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=${user.pincode}&date=${currentDate}`).then((response) => {
+  fetch(`${process.env.SERVER_ADDRESS}pin?pincode=${user.pincode}&date=${currentDate}`).then((response) => {
     console.log(response.status);
     if (response.status === 200) {
       return response.json();
