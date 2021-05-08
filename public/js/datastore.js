@@ -113,6 +113,15 @@ firebase.auth().onAuthStateChanged((user) => {
             })
         })
 
+        notifyForAges.addEventListener('change', (event) => {
+            const value = event.target.value;
+            collectionRef.update({
+                notifyForAges: value,
+                lastNotified: null,
+                nextAvailableVaccine: null
+            })
+        })
+
     }
 });
 
