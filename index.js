@@ -53,7 +53,7 @@ function checkAvailability() {
         if (
           !doc.data().lastNotified ||
           doc.data().lastNotified !==
-            addDaysToDate(new Date().toJSON().slice(0, 10), 1)
+          addDaysToDate(new Date().toJSON().slice(0, 10), 1)
         ) {
           console.log("Not notified");
           if (doc.data().pincode && doc.data().notifyWith === "pincode") {
@@ -128,16 +128,6 @@ function saveResponse(currentDate, id, user, JSONCalendarResponse) {
                   lastNotified: currentDate,
                   nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}`,
                 });
-                sendEmail(
-                  user.email,
-                  "VACCINE AVAILABLE",
-                  added[0].nextAvailableVaccine,
-                  (error, result) => {
-                    if (error) {
-                      console.error(error);
-                    }
-                  }
-                );
               }
             }
           });
@@ -151,6 +141,12 @@ function saveResponse(currentDate, id, user, JSONCalendarResponse) {
     collectionRef.update({
       lastNotified: null,
       nextAvailableVaccine: null,
+    });
+  } else {
+    sendEmail(user.email, "VACCINE AVAILABLE", added[0].nextAvailableVaccine, (error, result) => {
+      if (error) {
+        console.error(error);
+      }
     });
   }
 }
