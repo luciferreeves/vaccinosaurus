@@ -13,27 +13,27 @@ firebase.initializeApp(firebaseConfig);
 checkForLogin();
 // }
 function checkForLogin() {
-  firebase.auth().onAuthStateChanged((user) => {
-    if (user) {
-      if (
-        window.location.pathname !== "/account" &&
-        window.location.pathname !== "/"
-      ) {
-        window.location = `${window.location.origin}/account`;
-      }
-      if (document.getElementById("notifyMeButton")) {
-        document.getElementById("notifyMeButton").innerHTML = "My Account";
-        document.getElementById("logout-button").style.display = "block";
-      }
-    } else {
-      if (
-        window.location.pathname !== "/notify" &&
-        window.location.pathname !== "/"
-      ) {
-        window.location = `${window.location.origin}/notify`;
-      }
+  // firebase.auth().onAuthStateChanged((user) => {
+  if (window.localStorage.getItem("UID")) {
+    if (
+      window.location.pathname !== "/account" &&
+      window.location.pathname !== "/"
+    ) {
+      window.location = `${window.location.origin}/account`;
     }
-  });
+    if (document.getElementById("notifyMeButton")) {
+      document.getElementById("notifyMeButton").innerHTML = "My Account";
+      document.getElementById("logout-button").style.display = "block";
+    }
+  } else {
+    if (
+      window.location.pathname !== "/notify" &&
+      window.location.pathname !== "/"
+    ) {
+      window.location = `${window.location.origin}/notify`;
+    }
+  }
+  // });
 }
 
 function myAccount() {
@@ -60,6 +60,7 @@ function signInWithGoogle() {
       var credential = result.credential;
       var token = credential.accessToken;
       var user = result.user;
+      window.localStorage.setItem("UID", user.uid);
       window.location = `${window.location.origin}/account`;
     })
     .catch((error) => {
@@ -73,6 +74,7 @@ function logout() {
     .auth()
     .signOut()
     .then(() => {
+      window.localStorage.clear();
       window.location = `${window.location.origin}`;
     })
     .catch((error) => {
