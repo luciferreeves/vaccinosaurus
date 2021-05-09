@@ -53,9 +53,8 @@ function checkAvailability() {
         if (
           !doc.data().lastNotified ||
           doc.data().lastNotified !==
-          addDaysToDate(new Date().toJSON().slice(0, 10), 1)
+            addDaysToDate(new Date().toJSON().slice(0, 10), 1)
         ) {
-          console.log("Not notified");
           if (doc.data().pincode && doc.data().notifyWith === "pincode") {
             findDatesByPIN(doc.id, doc.data());
           }
@@ -64,7 +63,7 @@ function checkAvailability() {
             findDatesByDistrict(doc.id, doc.data());
           }
         } else {
-          console.log("already notified today");
+          //
         }
       });
     });
@@ -94,7 +93,6 @@ function findDatesByPIN(id, user) {
     `${process.env.SERVER_ADDRESS}pin?pincode=${user.pincode}&date=${currentDate}`
   )
     .then((response) => {
-      console.log(response.status);
       if (response.status === 200) {
         return response.json();
       }
@@ -143,11 +141,16 @@ function saveResponse(currentDate, id, user, JSONCalendarResponse) {
       nextAvailableVaccine: null,
     });
   } else {
-    sendEmail(user.email, "VACCINE AVAILABLE", added[0].nextAvailableVaccine, (error, result) => {
-      if (error) {
-        console.error(error);
+    sendEmail(
+      user.email,
+      "VACCINE AVAILABLE",
+      added[0].nextAvailableVaccine,
+      (error, result) => {
+        if (error) {
+          console.error(error);
+        }
       }
-    });
+    );
   }
 }
 
