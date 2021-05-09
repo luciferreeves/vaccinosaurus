@@ -3,12 +3,13 @@ html(lang='en')
     include common/header.pug
     +head('Login to Notify')
     body
-        nav(class="navbar navbar-dark bg-dark")
-            div(class="container-fluid")
-                a(class="navbar-brand" href="./") Vaccinosaurus
-                div(class="d-flex")
-                    button(class="btn btn-success me-2" type="button" id="notifyMeButton") Notify Me
-                    button(class="btn btn-primary" type="button" onclick="window.location.href='https://github.com/luciferreeves/vaccinosaurus'") Fork on GitHub
+        include common/navbar.pug
+        //- nav(class="navbar navbar-dark bg-dark")
+        //-     div(class="container-fluid")
+        //-         a(class="navbar-brand" href="./") Vaccinosaurus
+        //-         div(class="d-flex")
+        //-             button(class="btn btn-success me-2" type="button" id="notifyMeButton") Notify Me
+        //-             button(class="btn btn-primary" type="button" onclick="window.location.href='https://github.com/luciferreeves/vaccinosaurus'") Fork on GitHub
         div(class="container-xxl")
             div(class="mt-5 text-center")
                 h1(class="display-4") Login to get notified!

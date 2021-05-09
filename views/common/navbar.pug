@@ -1,0 +1,14 @@
+nav(class="navbar navbar-dark sticky-top navbar-expand-lg bg-dark")
+  div(class="col-lg-4 container-sm container-md")
+    a(class="navbar-brand" href="./") Vaccinosaurus
+    button(class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation")
+      i(class="fa fa-bars" aria-hidden="true")
+  div(class="collapse navbar-collapse" id="navbarSupportedContent")
+    ul(class="navbar-nav mr-auto w-100 justify-content-end")
+      li(class="nav-item text-center")
+        a(class="nav-link" onclick="myAccount()" id="notifyMeButton") Notify Me
+      li(class="nav-item text-center" style="display: none" id="logout-button")
+        a(class="nav-link" onclick="logout()") Logout
+      li(class="nav-item text-center")
+        a(class="nav-link" onclick="window.location.href='https://github.com/luciferreeves/vaccinosaurus'") Fork on GitHub
+
