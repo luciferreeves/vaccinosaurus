@@ -41,9 +41,9 @@ admin.initializeApp({
 });
 const db = admin.firestore();
 
-cron.schedule("* * * * *", () => {
-  checkAvailability();
-});
+// cron.schedule("* * * * *", () => {
+//   checkAvailability();
+// });
 
 function checkAvailability() {
   db.collection("users")
