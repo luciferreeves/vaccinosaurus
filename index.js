@@ -8,9 +8,7 @@ const admin = require("firebase-admin");
 const cron = require("node-cron");
 const fetch = require("node-fetch");
 const nodemailer = require("nodemailer");
-
-// Trying axios
-const axios = require("axios");
+const sqlConnectionPool = require("./sqlConnectionPool");
 
 require("dotenv").config();
 
@@ -33,40 +31,111 @@ app.get("/account", (req, res) => {
   res.render("account");
 });
 
-const serviceAccount = JSON.parse(
-  Buffer.from(process.env.SERVICE_ACCOUNT_KEY, "base64").toString()
-);
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+app.get("/account/getaccounts/:uid", (req, res) => {
+  const userid = req.params.uid;
+  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
+    connection.query(`SELECT * from accounts WHERE userid = '${userid}';`).then((rows) => {
+      res.send(rows);
+    }).catch((err) => {
+      console.log(err);
+      connection.release();
+    }).finally(() => {
+      connection.release();
+    });
+  })
 });
-const db = admin.firestore();
+
+app.delete("/account/deleteaccount/:id", (req, res) => {
+  const id = req.id;
+  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
+    connection.query(`DELETE from accounts WHERE id = '${id}';`).then((rows) => {
+      res.send(true);
+    }).catch((err) => {
+      console.log(err);
+      res.send(false);
+      connection.release();
+    }).finally(() => {
+      connection.release();
+    });
+  })
+})
+
+app.put("/account/addaccount", (req, res) => {
+  let query = `INSERT INTO accounts (userid, last_notified, pincode, notify_with, state_id, district_id, age, notify_ages, next_available_vaccine) VALUES (`;
+  query += `'${req.body.userid}',`;
+  query += `NULL,`
+  query += req.body.pincode ? `'${req.body.pincode}',` : 'NULL,';
+  query += req.body.notify_with ? `'${req.body.notify_with}',` : 'NULL,';
+  query += req.body.state_id ? `'${req.body.state_id}',` : 'NULL,';
+  query += req.body.district_id ? `'${req.body.district_id}',` : 'NULL,';
+  query += req.body.age ? `'${req.body.age}',` : 'NULL,';
+  query += req.body.notify_ages ? `'${req.body.notify_ages}',` : 'NULL,';
+  query += `NULL);`
+
+  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
+    connection.query(query).then((rows) => {
+      res.send(true);
+    }).catch((err) => {
+      console.log(err);
+      res.send(false);
+      connection.release();
+    }).finally(() => {
+      connection.release();
+    });
+  })
+});
+
+// const serviceAccount = JSON.parse(
+//   Buffer.from(process.env.SERVICE_ACCOUNT_KEY, "base64").toString()
+// );
+// admin.initializeApp({
+//   credential: admin.credential.cert(serviceAccount),
+// });
+// const db = admin.firestore();
 
 // cron.schedule("* * * * *", () => {
 //   checkAvailability();
 // });
 
 function checkAvailability() {
-  db.collection("users")
-    .get()
-    .then((snapshot) => {
-      snapshot.forEach((doc) => {
-        if (
-          !doc.data().lastNotified ||
-          doc.data().lastNotified !==
-            addDaysToDate(new Date().toJSON().slice(0, 10), 1)
-        ) {
-          if (doc.data().pincode && doc.data().notifyWith === "pincode") {
-            findDatesByPIN(doc.id, doc.data());
+  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
+    connection.query(`SELECT * from accounts;`).then((rows) => {
+      rows.forEach((row) => {
+        if (!row.last_notified || row.last_notified !== addDaysToDate(new Date().toJSON().slice(0, 10), 1)) {
+          if (row.pincode && row.notify_with === "pincode") {
+            findDatesByPIN(row.id, row);
           }
-
-          if (doc.data().notifyWith === "district" && doc.data().districtID) {
-            findDatesByDistrict(doc.id, doc.data());
-          }
-        } else {
-          //
         }
       });
+    }).catch((err) => {
+      console.log(err);
+      res.send(false);
+      connection.release();
+    }).finally(() => {
+      connection.release();
     });
+  })
+  // db.collection("users")
+  //   .get()
+  //   .then((snapshot) => {
+  //     snapshot.forEach((doc) => {
+  //       if (
+  //         !doc.data().lastNotified ||
+  //         doc.data().lastNotified !==
+  //         addDaysToDate(new Date().toJSON().slice(0, 10), 1)
+  //       ) {
+  //         if (doc.data().pincode && doc.data().notifyWith === "pincode") {
+  //           findDatesByPIN(doc.id, doc.data());
+  //         }
+
+  //         if (doc.data().notifyWith === "district" && doc.data().districtID) {
+  //           findDatesByDistrict(doc.id, doc.data());
+  //         }
+  //       } else {
+  //         //
+  //       }
+  //     });
+  //   });
 }
 
 function findDatesByDistrict(id, user) {
