@@ -119,3 +119,12 @@
 .nav-link:hover {
   color: white !important;
 }
+
+.btn-right {
+  text-align: end;
+}
+@media screen and (max-width: 750px) {
+  .btn-right {
+    text-align: left;
+  }
+}
