@@ -33,56 +33,77 @@ app.get("/account", (req, res) => {
 
 app.get("/account/getaccounts/:uid", (req, res) => {
   const userid = req.params.uid;
-  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
-    connection.query(`SELECT * from accounts WHERE userid = '${userid}';`).then((rows) => {
-      res.send(rows);
-    }).catch((err) => {
-      console.log(err);
-      connection.release();
-    }).finally(() => {
-      connection.release();
+  sqlConnectionPool
+    .createConnectionPool()
+    .getConnection()
+    .then((connection) => {
+      connection
+        .query(`SELECT * from accounts WHERE userid = '${userid}';`)
+        .then((rows) => {
+          res.send(rows);
+        })
+        .catch((err) => {
+          console.log(err);
+          connection.release();
+        })
+        .finally(() => {
+          connection.release();
+        });
     });
-  })
 });
 
 app.delete("/account/deleteaccount/:id", (req, res) => {
   const id = req.id;
-  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
-    connection.query(`DELETE from accounts WHERE id = '${id}';`).then((rows) => {
-      res.send(true);
-    }).catch((err) => {
-      console.log(err);
-      res.send(false);
-      connection.release();
-    }).finally(() => {
-      connection.release();
+  sqlConnectionPool
+    .createConnectionPool()
+    .getConnection()
+    .then((connection) => {
+      connection
+        .query(`DELETE from accounts WHERE id ='${id}';`)
+        .then((rows) => {
+          res.send(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send(false);
+          connection.release();
+        })
+        .finally(() => {
+          connection.release();
+        });
     });
-  })
-})
+});
 
 app.put("/account/addaccount", (req, res) => {
   let query = `INSERT INTO accounts (userid, last_notified, pincode, notify_with, state_id, district_id, age, notify_ages, next_available_vaccine) VALUES (`;
   query += `'${req.body.userid}',`;
-  query += `NULL,`
-  query += req.body.pincode ? `'${req.body.pincode}',` : 'NULL,';
-  query += req.body.notify_with ? `'${req.body.notify_with}',` : 'NULL,';
-  query += req.body.state_id ? `'${req.body.state_id}',` : 'NULL,';
-  query += req.body.district_id ? `'${req.body.district_id}',` : 'NULL,';
-  query += req.body.age ? `'${req.body.age}',` : 'NULL,';
-  query += req.body.notify_ages ? `'${req.body.notify_ages}',` : 'NULL,';
-  query += `NULL);`
+  query += `NULL,`;
+  query += req.body.pincode ? `'${req.body.pincode}',` : "NULL,";
+  query += req.body.notify_with ? `'${req.body.notify_with}',` : "NULL,";
+  query += req.body.state_id ? `'${req.body.state_id}',` : "NULL,";
+  query += req.body.district_id ? `'${req.body.district_id}',` : "NULL,";
+  query += req.body.age ? `'${req.body.age}',` : "NULL,";
+  query += req.body.notify_ages ? `'${req.body.notify_ages}',` : "NULL,";
+  query += `NULL);`;
 
-  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
-    connection.query(query).then((rows) => {
-      res.send(true);
-    }).catch((err) => {
-      console.log(err);
-      res.send(false);
-      connection.release();
-    }).finally(() => {
-      connection.release();
+  sqlConnectionPool
+    .createConnectionPool()
+    .getConnection()
+    .then((connection) => {
+      connection
+        .query(query)
+        .then((rows) => {
+          res.send(true);
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send(false);
+          connection.release();
+        })
+        .finally(() => {
+          connection.release();
+        });
     });
-  })
 });
 
 // const serviceAccount = JSON.parse(
@@ -98,23 +119,34 @@ app.put("/account/addaccount", (req, res) => {
 // });
 
 function checkAvailability() {
-  sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
-    connection.query(`SELECT * from accounts;`).then((rows) => {
-      rows.forEach((row) => {
-        if (!row.last_notified || row.last_notified !== addDaysToDate(new Date().toJSON().slice(0, 10), 1)) {
-          if (row.pincode && row.notify_with === "pincode") {
-            findDatesByPIN(row.id, row);
-          }
-        }
-      });
-    }).catch((err) => {
-      console.log(err);
-      res.send(false);
-      connection.release();
-    }).finally(() => {
-      connection.release();
+  sqlConnectionPool
+    .createConnectionPool()
+    .getConnection()
+    .then((connection) => {
+      connection
+        .query(`SELECT * from accounts;`)
+        .then((rows) => {
+          rows.forEach((row) => {
+            if (
+              !row.last_notified ||
+              row.last_notified !==
+                addDaysToDate(new Date().toJSON().slice(0, 10), 1)
+            ) {
+              if (row.pincode && row.notify_with === "pincode") {
+                findDatesByPIN(row.id, row);
+              }
+            }
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send(false);
+          connection.release();
+        })
+        .finally(() => {
+          connection.release();
+        });
     });
-  })
   // db.collection("users")
   //   .get()
   //   .then((snapshot) => {

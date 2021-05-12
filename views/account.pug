@@ -19,15 +19,15 @@ html(lang='en')
                 div(class="text-center")
                     div(class="spinner-border text-primary" role="status" id="accountLoader")
                         span(class="visually-hidden") Loading..
-                div(id="accountDetails" style="display:block")
-                    div(class="alert alert-danger" role="alert" id="incompleteAccount" style="display:none") Your account is missing some information. You will not be notified unless you fill the missing fields below.
-                    div(class="alert alert-info" role="alert" id="vaccineInformationAlert") <strong>Live Update:</strong> <span id="vaccineInformation"></span>
+                div(id="accountDetails" style="display:none")
+                    div(class="alert alert-info" role="alert") It may take upto 1 minute to show Live Update if a vaccine is available. 
+                    div(class="alert alert-warning mt-3" role="alert" id="noNotifier") You do not have any notifier setup. Please setup a new notifier using the <strong>Add Notifier</strong> button.
                     div(class="row")
                         div(class="col-sm")
                             h3 Hello, <span id="fullName"></span>
                             p(id="email")
                         div(class="col-sm btn-right")
-                            button(id="open-form" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal") Add notifier
+                            button(id="open-form" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal") Add Notifier
                         div(class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
                             div(class="modal-dialog modal-dialog-centered")
                                 div(class="modal-content")
@@ -65,10 +65,17 @@ html(lang='en')
                                     div(class="modal-footer")
                                         button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close
                                         button(type="button" class="btn btn-primary") Add
+                    div(id="accounts" class="mt-4 row")
+                        //- div(class="col-sm-12 col-md-4")
+                        //-     div(class="card w-100 mt-2")
+                        //-         div(class="card-header text-center") Banda
+                        //-         ul(class="list-group list-group-flush")
+                        //-             li(class="list-group-item") <b>Age:</b>  All
+                        //-             li(class="list-group-item") <b>Available Vaccine:</b>  None
+                        //-         div(class="card-footer text-end")
+                        //-             button(class="btn btn-danger") Delete
 
-                    //- p
-                    //-     small
-                    //-         em It may take upto 1 minute to show Live Update if a vaccine is available. 
+
 
 
     include common/footer.pug

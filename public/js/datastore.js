@@ -10,122 +10,95 @@ const age = document.getElementById("age");
 const states = document.getElementById("states");
 const districts = document.getElementById("districts");
 const notifyWith = document.getElementById("notifyWith");
-const vaccineInformationAlert = document.getElementById(
-  "vaccineInformationAlert"
-);
-const vaccineInformation = document.getElementById("vaccineInformation");
+const noNotifier = document.getElementById("noNotifier");
+const accounts = document.getElementById("accounts");
 
 fetchStates();
+renderCards();
+firebase.auth().onAuthStateChanged((user) => {
+  if (user) {
+    fullName.innerHTML = user.displayName;
+    email.innerHTML = user.email;
+  }
+});
 
-// firebase.auth().onAuthStateChanged((user) => {
-// if (user) {
-//     checkDataConsistency(user);
-//     const collectionRef = db.collection("users").doc(user.uid);
-//     collectionRef.onSnapshot((doc) => {
-//         if (doc.exists) {
-//             accountLoader.style.display = 'none';
-//             accountDetails.style.display = 'block';
-//             fullName.innerHTML = user.displayName;
-//             email.innerHTML = user.email;
-//             if (!doc.data().age || doc.data().notifyWith === 'pincode' && !doc.data().pincode || doc.data().notifyWith === 'district' && !doc.data().districtID) {
-//                 incompleteAccount.style.display = 'block';
-//                 vaccineInformationAlert.style.display = 'none';
-//             } else {
-//                 incompleteAccount.style.display = 'none';
-//                 vaccineInformationAlert.style.display = 'block';
-//             }
+states.addEventListener("change", (event) => {
+  const value = event.target.value;
+  fetchDistricts(value);
+});
+function renderCards() {
+  accounts.innerHTML = "";
+  const userId = localStorage.getItem("UID");
+  fetch(`account/getaccounts/${userId}`)
+    .then((response) => response.json())
+    .then((json) => {
+      accountLoader.style.display = "none";
+      accountDetails.style.display = "block";
+      if (json.length) {
+        noNotifier.style.display = "none";
+        json.forEach((account) => {
+          const colDiv = document.createElement("div");
+          colDiv.classList.add("col-sm-12", "col-md-4");
+          const card = document.createElement("div");
+          card.classList.add("card", "w-100", "mt-2");
+          const divHead = document.createElement("div");
+          divHead.classList.add("card-header", "text-center");
+          if (account.notify_with === "district") {
+            fetch(
+              `https://cdn-api.co-vin.in/api/v2/admin/location/districts/${account.state_id}`
+            )
+              .then((response) => response.json())
+              .then((json) => {
+                const district = json.districts.filter(
+                  (dist) => dist.district_id === parseInt(account.district_id)
+                )[0].district_name;
+                divHead.innerHTML = district;
+              });
+          } else {
+            divHead.innerHTML = account.pincode;
+          }
+          const ul = document.createElement("ul");
+          ul.classList.add("list-group", "list-group-flush");
+          const li1 = document.createElement("li");
+          li1.classList.add("list-group-item");
+          li1.innerHTML = `<b>Notify for age:</b>  ${
+            account.notify_ages === "all" ? "All" : account.notify_ages + `+`
+          }`;
+          const li2 = document.createElement("li");
+          li2.classList.add("list-group-item");
+          li2.innerHTML = `<b>Available Vaccine:</b> ${
+            account.next_available_vaccine !== "null"
+              ? account.next_available_vaccine
+              : "None"
+          }`;
+          ul.appendChild(li1);
+          ul.appendChild(li2);
+          const divFooter = document.createElement("div");
+          divFooter.classList.add("card-footer", "text-end");
+          const btnRemove = document.createElement("button");
+          btnRemove.classList.add("btn", "btn-danger");
+          btnRemove.innerHTML = "Delete Notifier";
+          btnRemove.addEventListener("click", () => {
+            deleteAccount(account.id);
+          });
+          divFooter.appendChild(btnRemove);
+          card.appendChild(divHead);
+          card.appendChild(ul);
+          card.appendChild(divFooter);
+          colDiv.appendChild(card);
+          accounts.appendChild(colDiv);
+        });
+      }
+    });
+}
 
-//             if (doc.data().age) {
-//                 age.value = doc.data().age;
-//             }
-
-//             if (doc.data().pincode) {
-//                 pincode.value = doc.data().pincode;
-//             }
-
-//             if (doc.data().stateID) {
-//                 states.value = doc.data().stateID;
-//                 if (doc.data().districtID) {
-//                     fetchDistricts(doc.data().stateID, doc.data().districtID);
-//                 }
-//             }
-
-//             if (doc.data().nextAvailableVaccine) {
-//                 vaccineInformation.innerHTML = doc.data().nextAvailableVaccine
-//             } else {
-//                 vaccineInformation.innerHTML = 'No vaccines available currently.'
-//             }
-
-//             notifyForAges.value = doc.data().notifyForAges;
-//             notifyWith.value = doc.data().notifyWith;
-//         }
-//     })
-
-//     age.addEventListener('keyup', (event) => {
-//         const value = event.target.value;
-//         if (!value || isNaN(Number(value)) || Number(value) < 1 || Number(value) > 99) {
-//             age.classList.add('is-invalid');
-//         } else {
-//             age.classList.remove('is-invalid');
-//             collectionRef.update({
-//                 age: value,
-//                 lastNotified: null,
-//                 nextAvailableVaccine: null
-//             })
-//         }
-//     })
-
-//     pincode.addEventListener('keyup', (event) => {
-//         const value = event.target.value;
-//         if (!value || isNaN(Number(value)) || value.length !== 6) {
-//             pincode.classList.add('is-invalid');
-//         } else {
-//             pincode.classList.remove('is-invalid');
-//             collectionRef.update({
-//                 pincode: value,
-//                 lastNotified: null,
-//                 nextAvailableVaccine: null
-//             })
-//         }
-//     })
-
-//     states.addEventListener('change', (event) => {
-//         const value = event.target.value;
-//         collectionRef.update({
-//             stateID: value
-//         })
-//         fetchDistricts(value)
-//     });
-
-//     districts.addEventListener('change', (event) => {
-//         const value = event.target.value;
-//         collectionRef.update({
-//             districtID: value,
-//             lastNotified: null,
-//             nextAvailableVaccine: null
-//         })
-//     });
-
-//     notifyWith.addEventListener('change', (event) => {
-//         const value = event.target.value;
-//         collectionRef.update({
-//             notifyWith: value,
-//             lastNotified: null,
-//             nextAvailableVaccine: null
-//         })
-//     })
-
-//     notifyForAges.addEventListener('change', (event) => {
-//         const value = event.target.value;
-//         collectionRef.update({
-//             notifyForAges: value,
-//             lastNotified: null,
-//             nextAvailableVaccine: null
-//         })
-//     })
-
-// }
-// });
+function deleteAccount(id) {
+  fetch(`account/deleteaccount/${id}`, {
+    method: "DELETE",
+  })
+    .then((res) => res.json())
+    .then((res) => renderCards());
+}
 
 function fetchStates() {
   fetch("https://cdn-api.co-vin.in/api/v2/admin/location/states")
