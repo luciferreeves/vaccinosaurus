@@ -12,7 +12,7 @@ const districts = document.getElementById("districts");
 const notifyWith = document.getElementById("notifyWith");
 const noNotifier = document.getElementById("noNotifier");
 const accounts = document.getElementById("accounts");
-
+const model = document.getElementById("close-button");
 fetchStates();
 renderCards();
 firebase.auth().onAuthStateChanged((user) => {
@@ -100,6 +100,96 @@ function deleteAccount(id) {
     .then((res) => renderCards());
 }
 
+const checkInputs = () => {
+  if (!age.value) {
+    document.getElementById("addNewNotifier").disabled = true;
+  } else {
+    if (
+      (notifyWith.value === "pincode" && !pincode.value) ||
+      (notifyWith.value === "district" &&
+        districts.value === "Select a district") ||
+      age.classList.contains("is-invalid") ||
+      pincode.classList.contains("is-invalid")
+    ) {
+      document.getElementById("addNewNotifier").disabled = true;
+    } else {
+      document.getElementById("addNewNotifier").disabled = false;
+    }
+  }
+};
+
+function addNewNotifier() {
+  const params = {
+    userid: localStorage.getItem("UID"),
+    pincode: pincode.value ? pincode.value : "null",
+    notify_with: notifyWith.value,
+    state_id: states.value !== "Select a state" ? states.value : "null",
+    district_id:
+      districts.value !== "Select a district" ? districts.value : "null",
+    age: age.value,
+    notify_ages: notifyForAges.value,
+  };
+  const url = "account/addaccount";
+  const option = {
+    method: "POST",
+    body: JSON.stringify(params),
+    headers: {
+      Accept: "application/json",
+      "Content-Type": "application/json",
+    },
+  };
+  fetch(url, option)
+    .then((res) => res.json())
+    .then((response) => {
+      pincode.value = "";
+      age.value = "";
+      districts.value = "Select a district";
+      states.value = "Select a state";
+      notifyForAges.value = "all";
+      notifyWith.value = "pincode";
+      model.click();
+    });
+
+  renderCards();
+}
+age.addEventListener("keyup", (event) => {
+  const value = event.target.value;
+  if (
+    !value ||
+    isNaN(Number(value)) ||
+    Number(value) < 1 ||
+    Number(value) > 99
+  ) {
+    age.classList.add("is-invalid");
+  } else {
+    age.classList.remove("is-invalid");
+  }
+  checkInputs();
+});
+notifyWith.addEventListener("change", () => {
+  if (
+    pincode.classList.contains("is-invalid") &&
+    notifyWith.value === "district"
+  ) {
+    pincode.classList.remove("is-invalid");
+  }
+  checkInputs();
+});
+states.addEventListener("change", () => {
+  checkInputs();
+});
+districts.addEventListener("change", () => {
+  checkInputs();
+});
+pincode.addEventListener("keyup", (event) => {
+  const value = event.target.value;
+  if (!value || isNaN(Number(value)) || value.length !== 6) {
+    pincode.classList.add("is-invalid");
+  } else {
+    pincode.classList.remove("is-invalid");
+  }
+  checkInputs();
+});
 function fetchStates() {
   fetch("https://cdn-api.co-vin.in/api/v2/admin/location/states")
     .then((response) => response.json())

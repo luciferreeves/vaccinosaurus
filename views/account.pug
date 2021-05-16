@@ -27,7 +27,7 @@ html(lang='en')
                             h3 Hello, <span id="fullName"></span>
                             p(id="email")
                         div(class="col-sm btn-right")
-                            button(id="open-form" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal") Add Notifier
+                            button(id="open-form" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onclick="checkInputs()") Add Notifier
                         div(class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true")
                             div(class="modal-dialog modal-dialog-centered")
                                 div(class="modal-content")
@@ -52,19 +52,19 @@ html(lang='en')
                                             div(class="mt-3")
                                                 label(for="notifyForAges" class="form-label") Notify for
                                                 select(class="form-select" id="notifyForAges")
-                                                    option(selected disabled) Notify For Ages
-                                                    option(value="all") All Ages
+                                                    option(disabled) Notify For Ages
+                                                    option(value="all" selected) All Ages
                                                     option(value="18") 18 - 44 Years
                                                     option(value="45") 45+ Years
                                             div(class="mt-3")
                                                 label(for="notifyWith" class="form-label") Search within
                                                 select(class="form-select" id="notifyWith")
-                                                    option(selected disabled) Search within
-                                                    option(value="pincode") PIN Code
+                                                    option(disabled) Search within
+                                                    option(value="pincode" selected) PIN Code
                                                     option(value="district") District
                                     div(class="modal-footer")
-                                        button(type="button" class="btn btn-secondary" data-bs-dismiss="modal") Close
-                                        button(type="button" class="btn btn-primary") Add
+                                        button(type="button" class="btn btn-secondary" id="close-button" data-bs-dismiss="modal") Close
+                                        button(type="button" class="btn btn-primary" id="addNewNotifier" onclick="addNewNotifier()") Add
                     div(id="accounts" class="mt-4 row")
                         //- div(class="col-sm-12 col-md-4")
                         //-     div(class="card w-100 mt-2")

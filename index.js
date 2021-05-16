@@ -9,7 +9,10 @@ const cron = require("node-cron");
 const fetch = require("node-fetch");
 const nodemailer = require("nodemailer");
 const sqlConnectionPool = require("./sqlConnectionPool");
+const bodyParser = require("body-parser");
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 require("dotenv").config();
 
 app.use(cors);
@@ -53,13 +56,13 @@ app.get("/account/getaccounts/:uid", (req, res) => {
 });
 
 app.delete("/account/deleteaccount/:id", (req, res) => {
-  const id = req.id;
+  const id = req.params.id;
   sqlConnectionPool
     .createConnectionPool()
     .getConnection()
     .then((connection) => {
       connection
-        .query(`DELETE from accounts WHERE id ='${id}';`)
+        .query(`DELETE FROM accounts WHERE id ='${id}';`)
         .then((rows) => {
           res.send(true);
         })
@@ -74,7 +77,7 @@ app.delete("/account/deleteaccount/:id", (req, res) => {
     });
 });
 
-app.put("/account/addaccount", (req, res) => {
+app.post("/account/addaccount", (req, res) => {
   let query = `INSERT INTO accounts (userid, last_notified, pincode, notify_with, state_id, district_id, age, notify_ages, next_available_vaccine) VALUES (`;
   query += `'${req.body.userid}',`;
   query += `NULL,`;
