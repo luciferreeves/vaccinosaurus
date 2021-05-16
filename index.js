@@ -114,9 +114,9 @@ app.put("/account/addaccount", (req, res) => {
 // });
 // const db = admin.firestore();
 
-// cron.schedule("* * * * *", () => {
-//   checkAvailability();
-// });
+cron.schedule("* * * * *", () => {
+  checkAvailability();
+});
 
 function checkAvailability() {
   sqlConnectionPool
@@ -130,10 +130,13 @@ function checkAvailability() {
             if (
               !row.last_notified ||
               row.last_notified !==
-                addDaysToDate(new Date().toJSON().slice(0, 10), 1)
+              addDaysToDate(new Date().toJSON().slice(0, 10), 1)
             ) {
-              if (row.pincode && row.notify_with === "pincode") {
+              if (row.pincode && row.pincode !== "null" && row.notify_with === "pincode") {
                 findDatesByPIN(row.id, row);
+              }
+              if (row.dstrict_id && row.dstrict_id !== "null" && row.notify_with === "district") {
+                findDatesByDistrict(row.id, row);
               }
             }
           });
@@ -173,7 +176,7 @@ function checkAvailability() {
 function findDatesByDistrict(id, user) {
   const currentDate = addDaysToDate(new Date().toJSON().slice(0, 10), 1);
   fetch(
-    `${process.env.SERVER_ADDRESS}district?district_id=${user.districtID}&date=${currentDate}`
+    `${process.env.SERVER_ADDRESS}district?district_id=${user.district_id}&date=${currentDate}`
   )
     .then((response) => {
       if (response.status === 200) {
@@ -208,7 +211,7 @@ function findDatesByPIN(id, user) {
 
 function saveResponse(currentDate, id, user, JSONCalendarResponse) {
   const added = [];
-  const collectionRef = db.collection("users").doc(id);
+  // const collectionRef = db.collection("users").doc(id);
   if (JSONCalendarResponse && JSONCalendarResponse.centers) {
     JSONCalendarResponse.centers.forEach((center) => {
       if (!added.length) {
@@ -223,10 +226,21 @@ function saveResponse(currentDate, id, user, JSONCalendarResponse) {
                   lastNotified: currentDate,
                   nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}`,
                 };
-                collectionRef.update({
-                  lastNotified: currentDate,
-                  nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}`,
+                sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
+                  connection.query(`UPDATE users SET last_notified = '${currentDate}', next_available_vaccine = '${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}' WHERE id = '${id}';`).then((rows) => {
+                    console.log(rows);
+                  }).catch((err) => {
+                    console.log(err);
+                    res.send(false);
+                    connection.release();
+                  }).finally(() => {
+                    connection.release();
+                  });
                 });
+                // collectionRef.update({
+                //   lastNotified: currentDate,
+                //   nextAvailableVaccine: `${session.vaccine} - ${session.available_capacity} slots available at ${center.name} - ${center.address}, ${center.district_name}, ${center.state_name} - ${center.pincode} on ${session.date}`,
+                // });
               }
             }
           });
@@ -237,9 +251,16 @@ function saveResponse(currentDate, id, user, JSONCalendarResponse) {
 
   if (!added.length) {
     // No vaccines found
-    collectionRef.update({
-      lastNotified: null,
-      nextAvailableVaccine: null,
+    sqlConnectionPool.createConnectionPool().getConnection().then((connection) => {
+      connection.query(`UPDATE users SET last_notified = NULL, next_available_vaccine = NULL WHERE id = '${id}';`).then((rows) => {
+        console.log(rows);
+      }).catch((err) => {
+        console.log(err);
+        res.send(false);
+        connection.release();
+      }).finally(() => {
+        connection.release();
+      });
     });
   } else {
     sendEmail(
